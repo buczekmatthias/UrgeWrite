@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\TokenController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\NoteController;
+use App\Http\Controllers\NoteGroupController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskGroupController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,4 +26,39 @@ Route::controller(AuthController::class)->prefix('auth')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::prefix('notes')->group(function () {
+        Route::controller(NoteGroupController::class)->group(function () {
+            Route::post('/', 'getNoteGroups');
+            Route::post('/add-new-group', 'addNoteGroup');
+        });
+
+        Route::prefix('{note_group:id}')->group(function () {
+            Route::controller(NoteGroupController::class)->group(function () {
+                Route::post('/', 'getNoteGroup');
+                Route::post('/update', 'updateNoteGroup');
+                Route::post('/delete', 'deleteNoteGroup');
+            });
+
+            Route::controller(NoteController::class)->prefix()->group(function () {
+            });
+        });
+    });
+
+    Route::prefix('tasks')->group(function () {
+        Route::controller(TaskGroupController::class)->group(function () {
+            Route::post('/', 'getTaskGroups');
+            Route::post('/add-new-group', 'addTaskGroup');
+        });
+
+        Route::prefix('{task_group:id}')->group(function () {
+            Route::controller(TaskGroupController::class)->group(function () {
+                Route::post('/', 'getTaskGroup');
+                Route::post('/update', 'updateTaskGroup');
+                Route::post('/delete', 'deleteTaskGroup');
+            });
+
+            Route::controller(TaskController::class)->prefix()->group(function () {
+            });
+        });
+    });
 });

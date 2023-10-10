@@ -3,12 +3,13 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { useUserStore } from "./stores/users";
+import { mapState } from "pinia";
 
 export default {
     name: "App",
     computed: {
-        ...mapGetters(["getUser"]),
+        ...mapState(useUserStore, ["getUser"]),
     },
     mounted() {
         if (this.getUser() === null)

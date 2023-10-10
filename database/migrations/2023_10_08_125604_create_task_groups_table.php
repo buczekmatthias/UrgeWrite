@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('taskgroups', function (Blueprint $table) {
+        Schema::create('task_groups', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
             $table->foreignUuid('user_id')->constrained();
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('taskgroups');
+        Schema::dropIfExists('task_groups');
     }
 };

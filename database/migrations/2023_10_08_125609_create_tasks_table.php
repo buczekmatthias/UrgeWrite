@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->text('content');
             $table->boolean('isDone')->default(false);
-            $table->foreignUuid('taskgroup_id')->nullable()->constrained();
+            $table->foreignUuid('task_group_id')->nullable()->constrained();
             $table->timestamps();
         });
     }
