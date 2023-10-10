@@ -39,7 +39,11 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::post('/delete', 'deleteNoteGroup');
             });
 
-            Route::controller(NoteController::class)->prefix()->group(function () {
+            Route::controller(NoteController::class)->group(function () {
+                Route::post('/create', 'addNote');
+                Route::post('/{note:id}', 'getNote');
+                Route::post('/{note:id}/update', 'updateNote');
+                Route::post('/{note:id}/delete', 'deleteNote');
             });
         });
     });
@@ -57,7 +61,11 @@ Route::middleware('auth:sanctum')->group(function () {
                 Route::post('/delete', 'deleteTaskGroup');
             });
 
-            Route::controller(TaskController::class)->prefix()->group(function () {
+            Route::controller(TaskController::class)->group(function () {
+                Route::post('/create', 'addTask');
+                Route::post('/{task:id}', 'getTask');
+                Route::post('/{task:id}/update', 'updateTask');
+                Route::post('/{task:id}/delete', 'deleteTask');
             });
         });
     });

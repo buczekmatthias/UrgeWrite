@@ -15,7 +15,7 @@ class NoteGroupServices
 
     public static function getNoteGroupNotes(NoteGroup $noteGroup): Collection
     {
-        return $noteGroup->notes()->orderBy('created_at', 'DESC')->select('id', 'title', 'content')->get();
+        return $noteGroup->notes()->orderBy('created_at', 'DESC')->select('id', 'title', 'content', 'note_group_id')->get();
     }
 
     public static function createNoteGroup(User $user, string $name): array

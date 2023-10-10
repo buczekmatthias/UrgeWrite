@@ -31,6 +31,6 @@ class Task extends Model
 
     public function group()
     {
-        return $this->belongsTo(TaskGroup::class);
+        return $this->belongsTo(TaskGroup::class, 'task_group_id');
     }
 }

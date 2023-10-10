@@ -6,6 +6,7 @@ export const useNotesStore = defineStore("notes", {
             notes: {},
         };
     },
+    // TODO: Change to array of objects, same for tasks
     getters: {
         getNotes: (state) => (name) => {
             return state.notes[name];

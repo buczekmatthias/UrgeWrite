@@ -27,6 +27,6 @@ class Note extends Model
 
     public function group()
     {
-        return $this->belongsTo(NoteGroup::class);
+        return $this->belongsTo(NoteGroup::class, 'note_group_id');
     }
 }
