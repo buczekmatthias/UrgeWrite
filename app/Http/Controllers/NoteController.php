@@ -17,11 +17,6 @@ class NoteController extends Controller
 
     public function addNote(Request $request, NoteGroup $noteGroup): JsonResponse
     {
-        // TODO: Switch to policies later
-        if ($noteGroup->owner->username !== auth()->user()->username) {
-            return response()->json(['message' => "You don't own this collection"], 403);
-        }
-
         $valid = $request->validate([
             'title' => 'string',
             'content' => 'required|string',
@@ -41,13 +36,9 @@ class NoteController extends Controller
     public function deleteNote(NoteGroup $noteGroup, Note $note): JsonResponse
     {
         try {
-            if ($noteGroup->owner->username === auth()->user()->username) {
-                $note->delete();
+            $note->delete();
 
-                return response()->json(['message' => 'Note has been deleted successfully'], 200);
-            } else {
-                return response()->json(['message' => "You don't own this note."], 403);
-            }
+            return response()->json(['message' => 'Note has been deleted successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong while deleting note. Try again later. ' . $e->getMessage()], 500);
         }

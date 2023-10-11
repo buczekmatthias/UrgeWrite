@@ -17,11 +17,6 @@ class TaskController extends Controller
 
     public function addTask(Request $request, TaskGroup $taskGroup): JsonResponse
     {
-        // TODO: Switch to policies later
-        if ($taskGroup->owner->username !== auth()->user()->username) {
-            return response()->json(['message' => "You don't own this collection"], 403);
-        }
-
         $valid = $request->validate([
             'content' => 'required|string',
             'isDone' => 'required|boolean'
@@ -41,13 +36,9 @@ class TaskController extends Controller
     public function deleteTask(TaskGroup $taskGroup, Task $task): JsonResponse
     {
         try {
-            if ($taskGroup->owner->username === auth()->user()->username) {
-                $task->delete();
+            $task->delete();
 
-                return response()->json(['message' => 'Task has been deleted successfully'], 200);
-            } else {
-                return response()->json(['message' => "You don't own this task."], 403);
-            }
+            return response()->json(['message' => 'Task has been deleted successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong while deleting task. Try again later. ' . $e->getMessage()], 500);
         }

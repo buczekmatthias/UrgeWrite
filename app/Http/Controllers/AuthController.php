@@ -23,6 +23,7 @@ class AuthController extends Controller
             return response()->json(['message' => 'Provided credentials are incorrect.'], 404);
         }
 
+        auth()->user()->tokens()->delete();
         $token = $user->createToken($request->username . "_tkn")->plainTextToken;
 
         return response()->json(['username' => $user->username, 'token' => $token], 200);

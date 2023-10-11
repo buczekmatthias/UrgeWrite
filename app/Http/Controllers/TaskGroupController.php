@@ -17,11 +17,7 @@ class TaskGroupController extends Controller
 
     public function getTaskGroup(TaskGroup $taskGroup): JsonResponse
     {
-        if ($taskGroup->owner->username === auth()->user()->username) {
-            return response()->json(['tasks' => TaskGroupServices::getTaskGroupTasks($taskGroup)], 200);
-        } else {
-            return response()->json(['message' => "You don't own this collection"], 403);
-        }
+        return response()->json(['tasks' => TaskGroupServices::getTaskGroupTasks($taskGroup)], 200);
     }
 
     public function addTaskGroup(Request $request): JsonResponse
@@ -46,14 +42,10 @@ class TaskGroupController extends Controller
     public function deleteTaskGroup(TaskGroup $taskGroup): JsonResponse
     {
         try {
-            if ($taskGroup->owner->username === auth()->user()->username) {
-                $taskGroup->tasks()->delete();
-                $taskGroup->delete();
+            $taskGroup->tasks()->delete();
+            $taskGroup->delete();
 
-                return response()->json(['message' => 'Group and related tasks has been deleted successfully'], 200);
-            } else {
-                return response()->json(['message' => "You don't own this collection."], 403);
-            }
+            return response()->json(['message' => 'Group and related tasks has been deleted successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong while deleting group. Try again later. ' . $e->getMessage()], 500);
         }

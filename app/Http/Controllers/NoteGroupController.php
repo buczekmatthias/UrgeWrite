@@ -17,11 +17,7 @@ class NoteGroupController extends Controller
 
     public function getNoteGroup(NoteGroup $noteGroup): JsonResponse
     {
-        if ($noteGroup->owner->username === auth()->user()->username) {
-            return response()->json(['notes' => NoteGroupServices::getNoteGroupNotes($noteGroup)], 200);
-        } else {
-            return response()->json(['message' => "You don't own this collection"], 403);
-        }
+        return response()->json(['notes' => NoteGroupServices::getNoteGroupNotes($noteGroup)], 200);
     }
 
     public function addNoteGroup(Request $request): JsonResponse
@@ -46,14 +42,10 @@ class NoteGroupController extends Controller
     public function deleteNoteGroup(NoteGroup $noteGroup): JsonResponse
     {
         try {
-            if ($noteGroup->owner->username === auth()->user()->username) {
-                $noteGroup->notes()->delete();
-                $noteGroup->delete();
+            $noteGroup->notes()->delete();
+            $noteGroup->delete();
 
-                return response()->json(['message' => 'Group and related notes has been deleted successfully'], 200);
-            } else {
-                return response()->json(['message' => "You don't own this collection."], 403);
-            }
+            return response()->json(['message' => 'Group and related notes has been deleted successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Something went wrong while deleting group. Try again later. ' . $e->getMessage()], 500);
         }

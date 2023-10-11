@@ -32,15 +32,15 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/add-new-group', 'addNoteGroup');
         });
 
-        Route::prefix('{note_group:id}')->group(function () {
+        Route::prefix('{note_group:id}')->middleware('can:access,note_group')->group(function () {
             Route::controller(NoteGroupController::class)->group(function () {
                 Route::post('/', 'getNoteGroup');
                 Route::post('/update', 'updateNoteGroup');
                 Route::post('/delete', 'deleteNoteGroup');
             });
 
-            Route::controller(NoteController::class)->group(function () {
-                Route::post('/create', 'addNote');
+            Route::post('/create', [NoteController::class, 'addNote']);
+            Route::controller(NoteController::class)->middleware('can:access,note')->group(function () {
                 Route::post('/{note:id}', 'getNote');
                 Route::post('/{note:id}/update', 'updateNote');
                 Route::post('/{note:id}/delete', 'deleteNote');
@@ -54,15 +54,15 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/add-new-group', 'addTaskGroup');
         });
 
-        Route::prefix('{task_group:id}')->group(function () {
+        Route::prefix('{task_group:id}')->middleware('can:access,task_group')->group(function () {
             Route::controller(TaskGroupController::class)->group(function () {
                 Route::post('/', 'getTaskGroup');
                 Route::post('/update', 'updateTaskGroup');
                 Route::post('/delete', 'deleteTaskGroup');
             });
 
-            Route::controller(TaskController::class)->group(function () {
-                Route::post('/create', 'addTask');
+            Route::post('/create', [TaskController::class, 'addTask']);
+            Route::controller(TaskController::class)->middleware('can:access,task')->group(function () {
                 Route::post('/{task:id}', 'getTask');
                 Route::post('/{task:id}/update', 'updateTask');
                 Route::post('/{task:id}/delete', 'deleteTask');
