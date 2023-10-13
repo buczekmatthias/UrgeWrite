@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#app {
+    @apply tracking-wide bg-meshFallback bg-mesh;
+}
+
+.router-link-active,
+.router-link-exact-active {
+    @apply border-b-2 border-solid border-focus font-semibold;
+}
+
+.sub-link {
+    @apply p-3 rounded-md hover:bg-slate-500 hover:text-white;
+}
+.sub-link.router-link-active,
+.sub-link.router-link-exact-active {
+    @apply bg-slate-700 text-white border-none rounded-md pointer-events-none;
+}
+
+.expand > div:first-of-type {
+    @apply border-b border-solid border-primary;
+}
+
+.expand > div:nth-of-type(2) {
+    @apply max-h-fit px-4 py-5;
+}
+
+@layer components {
+    .box {
+        @apply bg-white px-4 py-5 rounded-lg;
+    }
+}

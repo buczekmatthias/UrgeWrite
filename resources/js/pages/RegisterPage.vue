@@ -1,12 +1,12 @@
 <template>
     <form
         class="bg-white rounded-lg px-6 py-8 w-full max-w-lg flex flex-col items-center gap-10"
-        @submit="handleLogin"
+        @submit="handleRegister"
         ref="form"
     >
         <div class="flex flex-col items-center gap-3">
             <p class="uppercase text-lg font-extralight">UrgeWrite</p>
-            <p class="text-5xl font-semibold">Login</p>
+            <p class="text-5xl font-semibold">Register</p>
         </div>
         <div class="w-full flex flex-col gap-5">
             <div class="w-full flex flex-col gap-1">
@@ -17,6 +17,17 @@
                     type="text"
                     id="l-username"
                     name="username"
+                    class="outline-transparent rounded-md px-2 py-2 text-sm border-2 border-solid border-primary focus:border-focus"
+                    required
+                />
+            </div>
+            <div class="w-full flex flex-col gap-1">
+                <label for="l-email">Email</label>
+                <input
+                    v-model="email"
+                    type="email"
+                    id="l-email"
+                    name="email"
                     class="outline-transparent rounded-md px-2 py-2 text-sm border-2 border-solid border-primary focus:border-focus"
                     required
                 />
@@ -41,7 +52,7 @@
                 "
                 ref="submit"
             >
-                <span v-if="!isLoading">Sign in</span>
+                <span v-if="!isLoading">Create account</span>
                 <Loader v-else />
             </button>
             <p
@@ -53,11 +64,9 @@
             </p>
         </div>
         <p class="flex gap-1">
-            <span>Are you new here?</span>
-            <router-link
-                :to="{ name: 'register' }"
-                class="text-link font-semibold"
-                >Join now!</router-link
+            <span>Are you a member?</span>
+            <router-link :to="{ name: 'login' }" class="text-link font-semibold"
+                >Sign in</router-link
             >
         </p>
     </form>
@@ -70,12 +79,13 @@ import { useUserStore } from "../stores/users";
 import { default as Loader } from "../components/LoaderIcon.vue";
 
 export default {
-    name: "LoginPage",
+    name: "RegisterPage",
     data() {
         return {
             isLoading: false,
             errors: [],
             username: null,
+            email: null,
             password: null,
         };
     },
@@ -93,19 +103,20 @@ export default {
             });
         }
 
-        this.$refs.form.parentElement.classList.add("login");
+        this.$refs.form.parentElement.classList.add("register");
     },
     methods: {
-        handleLogin(e) {
+        handleRegister(e) {
             e.preventDefault();
             this.errors = [];
             this.isLoading = true;
 
             axios
                 .post(
-                    "/api/auth/login",
+                    "/api/auth/register",
                     {
                         username: this.username,
+                        email: this.email,
                         password: this.password,
                     },
                     {}
@@ -129,7 +140,8 @@ export default {
 </script>
 
 <style lang="postcss">
-#app.login {
+#app.login,
+#app.register {
     @apply justify-center;
 }
 </style>

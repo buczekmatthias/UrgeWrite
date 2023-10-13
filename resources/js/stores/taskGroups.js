@@ -1,22 +1,26 @@
 import { defineStore } from "pinia";
+import { useLocalStorage } from "@vueuse/core";
 
 export const useTaskGroupsStore = defineStore("tasksGroups", {
     state: () => {
         return {
-            taskGroups: [],
+            taskGroups: useLocalStorage("taskGroups", "[]"),
         };
     },
     getters: {
-        getTasks: (state) => () => {
-            return state.taskGroups;
+        getTaskGroups: (state) => () => {
+            return JSON.parse(state.taskGroups);
         },
     },
     actions: {
-        setTasks(payload) {
-            this.taskGroups = [...this.taskGroups, ...payload.taskGroups];
+        setTaskGroups(payload) {
+            this.taskGroups = JSON.stringify([
+                ...this.getTaskGroups(),
+                ...payload.groups,
+            ]);
         },
-        addTaskGroup(payload) {
-            this.taskGroups.push(payload.group);
+        resetTaskGroups() {
+            this.taskGroups = JSON.stringify([]);
         },
     },
 });

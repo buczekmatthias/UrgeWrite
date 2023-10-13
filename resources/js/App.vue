@@ -4,16 +4,17 @@
 
 <script>
 import { useUserStore } from "./stores/users";
-import { mapState } from "pinia";
+import { useRouter } from "vue-router";
 
 export default {
     name: "App",
-    computed: {
-        ...mapState(useUserStore, ["getUser"]),
-    },
-    mounted() {
-        if (this.getUser() === null)
-            return this.$router.push({ name: "login" });
+    setup() {
+        const store = useUserStore();
+        const router = useRouter();
+
+        if (store.getUser() === null) {
+            router.push({ name: "login" });
+        }
     },
 };
 </script>

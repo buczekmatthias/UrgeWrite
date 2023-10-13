@@ -1,35 +1,41 @@
 import { defineStore } from "pinia";
+import { useLocalStorage } from "@vueuse/core";
 
 export const useTasksStore = defineStore("tasks", {
     state: () => {
         return {
-            tasks: {},
+            tasks: useLocalStorage("tasks", "[]"),
         };
     },
     getters: {
-        getTasks: (state) => (name) => {
-            return state.tasks[name];
+        getTasks: (state) => (groupId) => {
+            return JSON.parse(state.tasks).find(
+                (task) => task.task_group_id === groupId
+            );
         },
+        getTask: (state) => (taskId) =>
+            JSON.parse(state.tasks).find((task) => task.id === taskId),
     },
     actions: {
         setTasks(payload) {
-            let group = payload.group;
-
-            if (group in this.tasks) {
-                this.tasks[group] = [...this.tasks[group], ...payload.tasks];
-            } else {
-                this.tasks = { ...this.tasks, group: payload.tasks };
-            }
+            this.tasks = JSON.stringify([
+                ...JSON.parse(this.tasks),
+                payload.tasks,
+            ]);
         },
         updateTaskContent(payload) {
-            this.tasks[payload.group].find(
-                (task) => task.id === payload.id
-            ).content = payload.content;
+            let task = this.getTasks().find((task) => task.id === payload.id);
+            task.content = payload.content;
+            task.isDone = payload.isDone;
+            task.task_group_id = payload.groupId;
         },
         setTaskDone(payload) {
-            this.tasks[payload.group].find(
+            this.getTasks(payload.groupId).find(
                 (task) => task.id === payload.id
             ).isDone = payload.isDone;
+        },
+        resetTasks() {
+            this.tasks = JSON.stringify([]);
         },
     },
 });

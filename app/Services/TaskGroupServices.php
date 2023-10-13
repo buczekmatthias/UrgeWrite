@@ -15,7 +15,7 @@ class TaskGroupServices
 
     public static function getTaskGroupTasks(TaskGroup $taskGroup): Collection
     {
-        return $taskGroup->tasks()->orderBy('created_at', 'DESC')->select('id', 'isDone', 'content', 'task_group_id')->get();
+        return $taskGroup->tasks()->orderBy('created_at', 'DESC')->select('id', 'isDone', 'content', 'task_group_id AS group_id')->get();
     }
 
     public static function createTaskGroup(User $user, string $name): array

@@ -10,11 +10,6 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    public function getTask(TaskGroup $taskGroup, Task $task): JsonResponse
-    {
-        return response()->json(['task' => ['id' => $task->id, 'isDone' => $task->isDone, 'content' => $task->content, 'task_group_id' => $task->group->id]], 200);
-    }
-
     public function addTask(Request $request, TaskGroup $taskGroup): JsonResponse
     {
         $valid = $request->validate([

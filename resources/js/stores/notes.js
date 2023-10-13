@@ -1,31 +1,37 @@
 import { defineStore } from "pinia";
+import { useLocalStorage } from "@vueuse/core";
 
 export const useNotesStore = defineStore("notes", {
     state: () => {
         return {
-            notes: {},
+            notes: useLocalStorage("notes", " []"),
         };
     },
-    // TODO: Change to array of objects, same for tasks
     getters: {
-        getNotes: (state) => (name) => {
-            return state.notes[name];
-        },
+        getNotes: (state) => (groupId) =>
+            JSON.parse(state.notes).find(
+                (note) => note.note_group_id === groupId
+            ),
+        getNote: (state) => (noteId) =>
+            JSON.parse(state.notes).find((note) => note.id === noteId),
     },
     actions: {
         setNotes(payload) {
-            let group = payload.group;
-
-            if (group in this.notes) {
-                this.notes[group] = [...this.notes[group], ...payload.notes];
-            } else {
-                this.notes = { ...this.notes, group: payload.notes };
-            }
+            this.notes = JSON.stringify([
+                ...JSON.parse(this.notes),
+                payload.notes,
+            ]);
         },
         updateNoteContent(payload) {
-            this.notes[payload.group].find(
+            let note = this.getNotes(payload.groupId).find(
                 (note) => note.id === payload.id
-            ).content = payload.content;
+            );
+            note.content = payload.content;
+            note.title = payload.title;
+            note.note_group_id = payload.groupId;
+        },
+        resetNotes() {
+            this.notes = JSON.stringify([]);
         },
     },
 });

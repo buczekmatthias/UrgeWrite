@@ -1,22 +1,26 @@
 import { defineStore } from "pinia";
+import { useLocalStorage } from "@vueuse/core";
 
 export const useNoteGroupsStore = defineStore("notesGroups", {
     state: () => {
         return {
-            noteGroups: [],
+            noteGroups: useLocalStorage("noteGroups", "[]"),
         };
     },
     getters: {
-        getNoteGroup: (state) => () => {
-            return state.noteGroups;
+        getNoteGroups: (state) => () => {
+            return JSON.parse(state.noteGroups);
         },
     },
     actions: {
-        setNoteGroup(payload) {
-            this.noteGroups = [...this.noteGroups, ...payload.noteGroups];
+        setNoteGroups(payload) {
+            this.noteGroups = JSON.stringify([
+                ...this.getNoteGroups(),
+                ...payload.groups,
+            ]);
         },
-        addNoteGroup(payload) {
-            this.noteGroups.push(payload.group);
+        resetNoteGroups() {
+            this.noteGroups = JSON.stringify([]);
         },
     },
 });

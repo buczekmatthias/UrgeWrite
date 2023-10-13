@@ -1,22 +1,36 @@
 import { defineStore } from "pinia";
+import { useLocalStorage } from "@vueuse/core";
 
 export const useUserStore = defineStore("user", {
     state: () => {
         return {
-            user: null,
+            user: useLocalStorage("user", null),
         };
     },
     getters: {
-        getUser: (state) => () => {
-            return state.user;
-        },
-        getToken: (state) => () => {
-            return state.user.token;
+        getUser: (state) => () => JSON.parse(state.user),
+        getApiConfig: (state) => () => {
+            let user = JSON.parse(state.user);
+            return user !== null
+                ? {
+                      headers: {
+                          Accept: "application/json",
+                          Authorization: `Bearer ${user.token}`,
+                      },
+                  }
+                : {
+                      headers: {
+                          Accept: "application/json",
+                      },
+                  };
         },
     },
     actions: {
         setUser(payload) {
-            this.user = payload.user;
+            this.user = JSON.stringify(payload.user);
+        },
+        logout() {
+            this.user = null;
         },
     },
 });

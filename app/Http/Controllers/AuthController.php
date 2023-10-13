@@ -22,8 +22,8 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Provided credentials are incorrect.'], 404);
         }
+        $user->tokens()->delete();
 
-        auth()->user()->tokens()->delete();
         $token = $user->createToken($request->username . "_tkn")->plainTextToken;
 
         return response()->json(['username' => $user->username, 'token' => $token], 200);
