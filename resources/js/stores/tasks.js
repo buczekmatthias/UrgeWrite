@@ -9,8 +9,8 @@ export const useTasksStore = defineStore("tasks", {
     },
     getters: {
         getTasks: (state) => (groupId) => {
-            return JSON.parse(state.tasks).find(
-                (task) => task.task_group_id === groupId
+            return JSON.parse(state.tasks).filter(
+                (task) => task.group_id === groupId
             );
         },
         getTask: (state) => (taskId) =>
@@ -20,11 +20,13 @@ export const useTasksStore = defineStore("tasks", {
         setTasks(payload) {
             this.tasks = JSON.stringify([
                 ...JSON.parse(this.tasks),
-                payload.tasks,
+                ...payload.tasks,
             ]);
         },
         updateTaskContent(payload) {
-            let task = this.getTasks().find((task) => task.id === payload.id);
+            let task = this.getTasks(payload.groupId).find(
+                (task) => task.id === payload.id
+            );
             task.content = payload.content;
             task.isDone = payload.isDone;
             task.task_group_id = payload.groupId;

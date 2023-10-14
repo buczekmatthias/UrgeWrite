@@ -67,7 +67,7 @@
 import axios from "axios";
 import { mapState } from "pinia";
 import { useUserStore } from "../stores/users";
-import { default as Loader } from "../components/LoaderIcon.vue";
+import { default as Loader } from "../components/IconLoader.vue";
 
 export default {
     name: "LoginPage",

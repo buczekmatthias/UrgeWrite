@@ -9,9 +9,7 @@ export const useNotesStore = defineStore("notes", {
     },
     getters: {
         getNotes: (state) => (groupId) =>
-            JSON.parse(state.notes).find(
-                (note) => note.note_group_id === groupId
-            ),
+            JSON.parse(state.notes).filter((note) => note.group_id === groupId),
         getNote: (state) => (noteId) =>
             JSON.parse(state.notes).find((note) => note.id === noteId),
     },
@@ -19,7 +17,7 @@ export const useNotesStore = defineStore("notes", {
         setNotes(payload) {
             this.notes = JSON.stringify([
                 ...JSON.parse(this.notes),
-                payload.notes,
+                ...payload.notes,
             ]);
         },
         updateNoteContent(payload) {
@@ -32,6 +30,14 @@ export const useNotesStore = defineStore("notes", {
         },
         resetNotes() {
             this.notes = JSON.stringify([]);
+        },
+        removeNote(payload) {
+            let notes = JSON.parse(this.notes);
+            let noteIndex = notes.findIndex((note) => note.id === payload.id);
+
+            notes.splice(noteIndex, 1);
+
+            this.notes = JSON.stringify(notes);
         },
     },
 });

@@ -99,6 +99,6 @@
 
 <script>
 export default {
-    name: "LoaderIcon",
+    name: "IconLoader",
 };
 </script>

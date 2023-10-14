@@ -11,6 +11,10 @@ export const useTaskGroupsStore = defineStore("tasksGroups", {
         getTaskGroups: (state) => () => {
             return JSON.parse(state.taskGroups);
         },
+        getTaskGroupName: (state) => (id) => {
+            return JSON.parse(state.taskGroups).find((group) => group.id === id)
+                .name;
+        },
     },
     actions: {
         setTaskGroups(payload) {
