@@ -57,7 +57,7 @@ export default {
                     this.setNoteGroups({ groups: res.data.noteGroups });
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                     alert(
                         "Failed fetching your note groups. Check console for error"
                     );
@@ -71,7 +71,7 @@ export default {
                     this.setTaskGroups({ groups: res.data.taskGroups });
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                     alert(
                         "Failed fetching your task groups. Check console for error"
                     );

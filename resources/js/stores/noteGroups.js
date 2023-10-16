@@ -12,7 +12,7 @@ export const useNoteGroupsStore = defineStore("notesGroups", {
             return JSON.parse(state.noteGroups);
         },
         getNoteGroupName: (state) => (id) =>
-            JSON.parse(state.noteGroups).find((group) => group.id === id).name,
+            JSON.parse(state.noteGroups).find((group) => group.id === id)?.name,
     },
     actions: {
         setNoteGroups(payload) {
@@ -20,6 +20,23 @@ export const useNoteGroupsStore = defineStore("notesGroups", {
                 ...this.getNoteGroups(),
                 ...payload.groups,
             ]);
+        },
+        deleteNoteGroup(payload) {
+            let noteGroups = JSON.parse(this.noteGroups);
+            let noteIndex = noteGroups.findIndex(
+                (group) => group.id === payload.id
+            );
+
+            noteGroups.splice(noteIndex, 1);
+
+            this.noteGroups = JSON.stringify(noteGroups);
+        },
+        updateGroupName(payload) {
+            let groups = this.getNoteGroups();
+
+            groups.find((g) => g.id === payload.id).name = payload.name;
+
+            this.noteGroups = JSON.stringify(groups);
         },
         resetNoteGroups() {
             this.noteGroups = JSON.stringify([]);

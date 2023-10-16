@@ -1,6 +1,6 @@
 <template>
     <svg
-        class="fill-green-600 h-8 cursor-pointer"
+        class="fill-green-600 h-6 cursor-pointer"
         stroke-width="0"
         viewBox="0 0 448 512"
         xmlns="http://www.w3.org/2000/svg"

@@ -42,6 +42,10 @@ class NoteGroupController extends Controller
     public function deleteNoteGroup(NoteGroup $noteGroup): JsonResponse
     {
         try {
+            if ($noteGroup->name === 'Unset') {
+                return response()->json(['message' => "You can't delete default group"], 400);
+            }
+
             $noteGroup->notes()->delete();
             $noteGroup->delete();
 
@@ -53,12 +57,17 @@ class NoteGroupController extends Controller
 
     public function updateNoteGroup(Request $request, NoteGroup $noteGroup): JsonResponse
     {
+        if ($noteGroup->name === 'Unset') {
+            return response()->json(['message' => "You can't update default group"], 400);
+        }
+
         $valid = $request->validate([
-            'name' => 'string|required|unique:note_groups,name'
+            'name' => 'string|required|unique:note_groups,name,NULL,id,user_id,' . auth()->user()->id
         ]);
 
         if ($valid) {
             try {
+
                 $noteGroup->update($valid);
 
                 return response()->json(['message' => 'Group has been successfully updated', 'group' => ['id' => $noteGroup->id, 'name' => $noteGroup->name]], 200);

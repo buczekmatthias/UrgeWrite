@@ -12,11 +12,16 @@
 }
 
 .sub-link {
-    @apply p-3 rounded-md hover:bg-slate-500 hover:text-white;
+    @apply p-3 rounded-md hover:bg-slate-300 hover:text-slate-900;
 }
 .sub-link.router-link-active,
 .sub-link.router-link-exact-active {
-    @apply bg-slate-700 text-white border-none rounded-md pointer-events-none;
+    @apply bg-slate-800 text-white border-none rounded-md pointer-events-none;
+}
+
+.sub-link.router-link-active svg,
+.sub-link.router-link-exact-active svg {
+    @apply pointer-events-auto;
 }
 
 .expand > div:first-of-type {
@@ -30,5 +35,8 @@
 @layer components {
     .box {
         @apply bg-white px-4 py-5 rounded-lg;
+    }
+    .input {
+        @apply outline-transparent rounded-md px-2 py-2 text-sm border-2 border-solid border-primary focus:border-focus;
     }
 }

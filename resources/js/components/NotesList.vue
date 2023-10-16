@@ -8,7 +8,7 @@
             <p class="font-semibold text-xl">
                 Notes from
                 <i>
-                    <b>"{{ chosenGroup }}"</b>
+                    <b>"{{ chosenGroup ?? "" }}"</b>
                 </i>
                 collection
             </p>
@@ -112,7 +112,7 @@ export default {
                     this.setNotes({ notes: res.data.notes });
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                     alert(
                         "Failed fetching your notes. Check console for error"
                     );

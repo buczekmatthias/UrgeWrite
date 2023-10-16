@@ -23,7 +23,7 @@ class NoteGroupServices
         try {
             $group = $user->noteGroups()->create(['name' => $name]);
 
-            return [['message' => 'Group successfully added to your collection', 'group' => ['id' => $group->id, 'name' => $group->name]], 'code' => 201];
+            return [['message' => 'Group successfully added to your collection', 'group' => ['id' => $group->id, 'name' => $group->name, 'notes_count' => 0]], 'code' => 201];
         } catch (\Exception $e) {
             return ['message' => "Couldn't add group. Try again later.", 'code' => 500];
         }

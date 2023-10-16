@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-4">
         <div class="flex justify-between items-center">
             <div class="flex flex-col gap-1">
                 <p class="text-2xl font-semibold">{{ note.title }}</p>
@@ -10,7 +10,7 @@
                 <Delete class="h-6" @click="deleteNote" />
             </div>
         </div>
-        <p class="">{{ note.content }}</p>
+        <p>{{ note.content }}</p>
     </div>
 </template>
 
@@ -72,7 +72,7 @@ export default {
                     });
                 })
                 .catch((err) => {
-                    console.log(err);
+                    console.error(err);
                     alert("Failed deleting your note");
                 });
         },

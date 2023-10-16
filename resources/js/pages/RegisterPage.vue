@@ -1,7 +1,7 @@
 <template>
     <form
         class="bg-white rounded-lg px-6 py-8 w-full max-w-lg flex flex-col items-center gap-10"
-        @submit="handleRegister"
+        @submit.prevent="handleRegister"
         ref="form"
     >
         <div class="flex flex-col items-center gap-3">
@@ -17,7 +17,7 @@
                     type="text"
                     id="l-username"
                     name="username"
-                    class="outline-transparent rounded-md px-2 py-2 text-sm border-2 border-solid border-primary focus:border-focus"
+                    class="input"
                     required
                 />
             </div>
@@ -28,7 +28,7 @@
                     type="email"
                     id="l-email"
                     name="email"
-                    class="outline-transparent rounded-md px-2 py-2 text-sm border-2 border-solid border-primary focus:border-focus"
+                    class="input"
                     required
                 />
             </div>
@@ -39,7 +39,7 @@
                     type="password"
                     id="l-password"
                     name="password"
-                    class="outline-transparent rounded-md px-2 py-2 text-sm border-2 border-solid border-primary focus:border-focus"
+                    class="input"
                     required
                 />
             </div>
@@ -73,7 +73,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import { mapState } from "pinia";
 import { useUserStore } from "../stores/users";
 import { default as Loader } from "../components/IconLoader.vue";
@@ -106,8 +105,7 @@ export default {
         this.$refs.form.parentElement.classList.add("register");
     },
     methods: {
-        handleRegister(e) {
-            e.preventDefault();
+        handleRegister() {
             this.errors = [];
             this.isLoading = true;
 
