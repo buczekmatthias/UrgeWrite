@@ -4,7 +4,7 @@
         :groupId="taskGroupId"
         @closeForm="closeForm"
     />
-    <div class="max-xl:box">
+    <div class="max-xl:box lg:max-h-[80vh] lg:overflow-auto">
         <p
             class="italic font-extrabold text-xl border-b border-solid border-primary py-2"
         >

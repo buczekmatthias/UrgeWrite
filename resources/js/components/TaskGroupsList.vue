@@ -1,6 +1,6 @@
 <template>
     <div
-        class="flex flex-col gap-4 xl:box xl:grid xl:grid-cols-3 xl:gap-3 2xl:gap-6 xl:max-h-[85vh]"
+        class="flex flex-col gap-4 lg:box lg:grid lg:grid-cols-2 lg:gap-3 2xl:gap-6 lg:max-h-[85vh]"
     >
         <TaskGroupFormCreate @close-form="closeForm" v-if="isCreatingGroup" />
         <TaskGroupFormEdit
@@ -8,19 +8,19 @@
             @close-form="closeForm"
             v-if="isEditingGroup"
         />
-        <div class="max-xl:box w-full !p-0 xl:max-h-[80vh] xl:overflow-auto">
+        <div class="max-xl:box w-full !p-0 lg:max-h-[80vh] xl:overflow-auto">
             <div
-                class="px-4 py-5 cursor-pointer flex justify-between items-center xl:pointer-events-none xl:cursor-default xl:border-b xl:border-solid xl:border-primary"
+                class="px-4 py-5 cursor-pointer flex justify-between items-center lg:pointer-events-none lg:cursor-default lg:border-b lg:border-solid lg:border-primary"
                 ref="header"
                 @click="handleExpand()"
             >
                 <p class="font-semibold text-xl">Task groups</p>
-                <p class="text-sm text-link xl:hidden">
+                <p class="text-sm text-link lg:hidden">
                     {{ isExpanded ? "Hide" : "Expand" }}
                 </p>
             </div>
             <div
-                class="max-h-0 overflow-hidden flex flex-col gap-2 xl:overflow-auto xl:max-h-fit xl:py-3"
+                class="max-h-0 overflow-hidden flex flex-col gap-2 lg:overflow-auto lg:max-h-fit lg:py-3"
             >
                 <ButtonCreate
                     text="Add new group"
