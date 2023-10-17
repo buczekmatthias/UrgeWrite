@@ -45,15 +45,11 @@
             </div>
             <button
                 class="w-full bg-emerald-700 hover:bg-emerald-600 text-white rounded-md py-3 flex justify-center"
-                :class="
-                    isLoading === true
-                        ? 'pointer-events-none bg-emerald-900'
-                        : ''
-                "
+                :class="isLoading === true ? 'loading bg-emerald-900' : ''"
                 ref="submit"
             >
                 <span v-if="!isLoading">Create account</span>
-                <Loader v-else />
+                <IconLoader class="fill-white" v-else />
             </button>
             <p
                 class="w-full border-2 border-red-600 border-solid text-red-600 bg-red-600 bg-opacity-20 capitalize rounded-md px-4 py-3 font-semibold"
@@ -75,7 +71,7 @@
 <script>
 import { mapState } from "pinia";
 import { useUserStore } from "../stores/users";
-import { default as Loader } from "../components/IconLoader.vue";
+import IconLoader from "../components/IconLoader.vue";
 
 export default {
     name: "RegisterPage",
@@ -89,7 +85,7 @@ export default {
         };
     },
     components: {
-        Loader,
+        IconLoader,
     },
     computed: {
         ...mapState(useUserStore, ["getUser", "setUser"]),

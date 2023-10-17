@@ -1,4 +1,15 @@
 <template>
+    <NoteFormCreate
+        :groupId="$route.params.group"
+        @close-form="closeForm"
+        v-if="isCreatingNote"
+    />
+    <NoteFormEdit
+        :groupId="$route.params.group"
+        :noteId="$route.params.group?.elementId"
+        @close-form="closeForm"
+        v-if="isEditingNote"
+    />
     <div class="max-xl:box w-full !p-0">
         <div
             class="px-4 py-5 cursor-pointer flex justify-between items-center"
@@ -16,10 +27,12 @@
                 {{ isExpanded ? "Hide" : "Expand" }}
             </p>
         </div>
+        <IconLoader v-if="isLoading" class="fill-gray-900 mx-auto my-4" />
         <div
             class="max-h-0 overflow-hidden flex flex-col gap-2"
-            v-if="list.length > 0"
+            v-else-if="list.length > 0"
         >
+            <ButtonCreate text="Create note" @click="isCreatingNote = true" />
             <router-link
                 class="sub-link flex flex-col gap-2"
                 :to="{
@@ -39,14 +52,15 @@
                 <p class="font-light text-sm">{{ item.created_at }}</p>
             </router-link>
         </div>
-        <div class="max-h-0 overflow-hidden flex flex-col gap-2" v-else>
-            <p class="">There are no notes in this collection</p>
-            <button>Create one</button>
+        <div class="max-h-0 overflow-hidden flex flex-col gap-4" v-else>
+            <p class="text-center">There are no notes in this collection</p>
+            <ButtonCreate text="Create note" @click="isCreatingNote = true" />
         </div>
     </div>
     <div class="max-xl:box">
         <p v-if="!$route.params.elementId">Select note to see details of it</p>
         <NoteItem
+            @note-edit="updateListAfterEdit"
             @note-delete="updateListAfterDelete"
             :noteId="$route.params.elementId"
             v-else
@@ -55,6 +69,10 @@
 </template>
 
 <script>
+import IconLoader from "./IconLoader.vue";
+import NoteFormCreate from "./NoteFormCreate.vue";
+import NoteFormEdit from "./NoteFormEdit.vue";
+import ButtonCreate from "./ButtonCreate.vue";
 import NoteItem from "../components/NoteItem.vue";
 import { useUserStore } from "../stores/users";
 import { useNoteGroupsStore } from "../stores/noteGroups";
@@ -65,22 +83,30 @@ export default {
     name: "NotesList",
     components: {
         NoteItem,
+        ButtonCreate,
+        NoteFormCreate,
+        NoteFormEdit,
+        IconLoader,
     },
     data() {
         return {
+            isEditingNote: false,
+            isCreatingNote: false,
             isExpanded: false,
             list: [],
+            isLoading: false,
         };
     },
     emits: {
         noteDeleted: null,
+        noteCreated: null,
     },
     props: {
         group: String,
     },
     watch: {
         group: function (newVal, oldVal) {
-            this.list = this.getNotes(newVal);
+            this.pullNotes();
         },
     },
     computed: {
@@ -89,29 +115,39 @@ export default {
         },
         ...mapState(useUserStore, ["getApiConfig"]),
         ...mapState(useNoteGroupsStore, ["getNoteGroupName"]),
-        ...mapState(useNotesStore, ["getNotes", "setNotes"]),
+        ...mapState(useNotesStore, ["hasNotes", "getNotes", "setNotes"]),
     },
     mounted() {
-        let stored = this.getNotes(this.group);
-        if (stored.length === 0) {
-            this.fetchGroupNotes();
-        } else {
-            this.list = stored;
-        }
+        this.pullNotes();
     },
     methods: {
+        pullNotes() {
+            let stored = this.getNotes(this.group);
+
+            if (stored === undefined) {
+                this.fetchGroupNotes();
+            } else {
+                this.list = stored;
+            }
+        },
         handleExpand() {
             this.isExpanded = !this.isExpanded;
             this.$refs.header.parentElement.classList.toggle("expand");
         },
         fetchGroupNotes() {
+            this.isLoading = true;
             axios
                 .post(`/api/notes/${this.group}`, {}, this.getApiConfig())
                 .then((res) => {
                     this.list = res.data.notes;
-                    this.setNotes({ notes: res.data.notes });
+                    this.setNotes({
+                        groupId: this.group,
+                        notes: res.data.notes,
+                    });
+                    this.isLoading = false;
                 })
                 .catch((err) => {
+                    this.isLoading = false;
                     console.error(err);
                     alert(
                         "Failed fetching your notes. Check console for error"
@@ -120,6 +156,16 @@ export default {
         },
         updateListAfterDelete() {
             this.$emit("noteDeleted");
+            this.list = this.getNotes(this.group);
+        },
+        updateListAfterEdit() {
+            this.list = this.getNotes(this.group);
+        },
+        closeForm() {
+            this.$emit("noteCreated");
+            this.isCreatingNote = false;
+            this.isEditingNote = false;
+
             this.list = this.getNotes(this.group);
         },
     },

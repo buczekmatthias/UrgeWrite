@@ -48,5 +48,12 @@ export const useNoteGroupsStore = defineStore("notesGroups", {
 
             this.noteGroups = JSON.stringify(groups);
         },
+        increaseNoteCount(payload) {
+            let groups = this.getNoteGroups();
+
+            groups.find((group) => group.id === payload.id).notes_count += 1;
+
+            this.noteGroups = JSON.stringify(groups);
+        },
     },
 });

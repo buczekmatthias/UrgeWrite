@@ -26,6 +26,7 @@
                     Cancel
                 </button>
                 <button
+                    :class="isLoading ? 'loading' : ''"
                     class="rounded-md px-4 py-2 border-2 border-solid border-emerald-600 bg-emerald-600 text-white font-semibold flex-1"
                 >
                     Create
@@ -45,6 +46,7 @@ export default {
     data() {
         return {
             name: "",
+            isLoading: false,
         };
     },
     emits: {
@@ -56,6 +58,7 @@ export default {
     },
     methods: {
         handleCreateFormSubmit() {
+            this.isLoading = true;
             axios
                 .post(
                     `/api/notes/add-new-group`,
@@ -67,10 +70,12 @@ export default {
                 .then((res) => {
                     this.setNoteGroups({ groups: [res.data.group] });
 
+                    this.isLoading = false;
                     this.closeForm();
                     this.$refs.input.value = "";
                 })
                 .catch((err) => {
+                    this.isLoading = false;
                     console.error(err);
                     alert("Failed adding note group.");
                 });

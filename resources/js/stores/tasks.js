@@ -4,6 +4,7 @@ import { useLocalStorage } from "@vueuse/core";
 export const useTasksStore = defineStore("tasks", {
     state: () => {
         return {
+            // TODO: Convert to object
             tasks: useLocalStorage("tasks", "[]"),
         };
     },

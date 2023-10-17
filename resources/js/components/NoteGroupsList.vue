@@ -18,15 +18,10 @@
                 </p>
             </div>
             <div class="max-h-0 overflow-hidden flex flex-col gap-2">
-                <button
-                    class="flex items-center justify-center gap-3 bg-emerald-600 bg-opacity-20 rounded-md p-4 hover:bg-opacity-30"
+                <ButtonCreate
+                    text="Add new group"
                     @click="isCreatingGroup = true"
-                >
-                    <IconCreate />
-                    <span class="text-lg font-semibold text-emerald-600">
-                        Add new group
-                    </span>
-                </button>
+                />
                 <router-link
                     class="sub-link flex justify-between items-center gap-2"
                     :to="{
@@ -49,13 +44,20 @@
                             (isActive || isExactActive) && item.name !== 'Unset'
                         "
                     >
-                        <IconEdit @click="isEditingGroup = true" />
-                        <IconDelete @click="deleteGroup(item.id)" />
+                        <IconEdit
+                            :class="isLoading ? 'loading' : ''"
+                            @click="isEditingGroup = true"
+                        />
+                        <IconDelete
+                            :class="isLoading ? 'loading' : ''"
+                            @click="deleteGroup(item.id)"
+                        />
                     </div>
                 </router-link>
             </div>
         </div>
         <NotesList
+            @note-created="increaseCount"
             @note-deleted="decreaseCount"
             :group="$route.params.group"
             v-if="$route.params.group"
@@ -67,14 +69,15 @@
 </template>
 
 <script>
+import ButtonCreate from "./ButtonCreate.vue";
 import NoteGroupFormCreate from "./NoteGroupFormCreate.vue";
 import NoteGroupFormEdit from "./NoteGroupFormEdit.vue";
-import IconCreate from "./IconCreate.vue";
 import IconEdit from "./IconEdit.vue";
 import IconDelete from "./IconDelete.vue";
 import NotesList from "./NotesList.vue";
 import { useUserStore } from "../stores/users";
 import { useNoteGroupsStore } from "../stores/noteGroups";
+import { useNotesStore } from "../stores/notes";
 import { mapState } from "pinia";
 
 export default {
@@ -86,9 +89,9 @@ export default {
         NotesList,
         IconDelete,
         IconEdit,
-        IconCreate,
         NoteGroupFormCreate,
         NoteGroupFormEdit,
+        ButtonCreate,
     },
     data() {
         return {
@@ -96,6 +99,7 @@ export default {
             isCreatingGroup: false,
             isExpanded: false,
             groupsList: [],
+            isLoading: false,
         };
     },
     watch: {
@@ -109,7 +113,9 @@ export default {
             "getNoteGroups",
             "decreaseNoteCount",
             "deleteNoteGroup",
+            "increaseNoteCount",
         ]),
+        ...mapState(useNotesStore, ["removeGroup"]),
     },
     mounted() {
         this.groupsList = this.list;
@@ -124,12 +130,15 @@ export default {
             this.groupsList = this.getNoteGroups();
         },
         deleteGroup(groupId) {
+            this.isLoading = true;
             axios
                 .post(`/api/notes/${groupId}/delete`, {}, this.getApiConfig())
                 .then((res) => {
                     this.deleteNoteGroup({ id: groupId });
+                    this.removeGroup({ groupId: groupId });
                     this.groupsList = this.getNoteGroups();
 
+                    this.isLoading = false;
                     this.$router.push({
                         name: "content",
                         params: {
@@ -138,9 +147,14 @@ export default {
                     });
                 })
                 .catch((err) => {
+                    this.isLoading = false;
                     console.error(err);
                     alert("Failed deleting note group");
                 });
+        },
+        increaseCount() {
+            this.increaseNoteCount({ id: this.$route.params.group });
+            this.groupsList = this.getNoteGroups();
         },
         closeForm() {
             this.isCreatingGroup = false;

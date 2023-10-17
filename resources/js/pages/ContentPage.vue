@@ -33,6 +33,7 @@
                 </p>
                 <button
                     @click="handleLogout"
+                    :class="isLoading ? 'loading' : ''"
                     class="hover:underline underline-offset-2 text-link font-semibold"
                 >
                     Logout
@@ -58,6 +59,7 @@ export default {
     name: "Homepage",
     data() {
         return {
+            isLoading: false,
             username: "",
         };
     },
@@ -82,6 +84,7 @@ export default {
     },
     methods: {
         handleLogout() {
+            this.isLoading = true;
             axios
                 .post("/api/auth/logout", {}, this.getApiConfig())
                 .then(this.logoutActions)
@@ -93,6 +96,8 @@ export default {
             this.resetNotes();
             this.resetTaskGroups();
             this.resetTasks();
+
+            this.isLoading = false;
 
             return this.$router.push({
                 name: "login",

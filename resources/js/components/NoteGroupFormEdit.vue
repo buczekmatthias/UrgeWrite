@@ -8,10 +8,10 @@
         >
             <p class="font-semibold text-3xl">Update group</p>
             <div class="flex flex-col gap-2">
-                <label for="c-name">Group name</label>
+                <label for="e-name">Group name</label>
                 <input
                     type="text"
-                    id="c-name"
+                    id="e-name"
                     class="input"
                     ref="input"
                     v-model="name"
@@ -21,22 +21,14 @@
                 <button
                     type="button"
                     class="rounded-md px-4 py-2 border-2 border-solid border-red-600 text-red-600 font-semibold flex-1"
-                    :class="
-                        isLoading
-                            ? 'pointer-events-none cursor-not-allowed'
-                            : 'pointer-events-auto'
-                    "
+                    :class="isLoading ? 'loading' : ''"
                     @click="closeForm"
                 >
                     Cancel
                 </button>
                 <button
                     class="rounded-md px-4 py-2 border-2 border-solid border-emerald-600 bg-emerald-600 text-white font-semibold flex-1"
-                    :class="
-                        isLoading
-                            ? 'pointer-events-none cursor-not-allowed'
-                            : 'pointer-events-auto'
-                    "
+                    :class="isLoading ? 'loading' : ''"
                 >
                     Update
                 </button>

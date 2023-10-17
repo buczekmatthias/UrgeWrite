@@ -40,10 +40,10 @@ Route::middleware('auth:sanctum')->group(function () {
             });
 
             Route::post('/create', [NoteController::class, 'addNote']);
-            Route::controller(NoteController::class)->middleware('can:access,note')->group(function () {
-                Route::post('/{note:id}', 'getNote');
-                Route::post('/{note:id}/update', 'updateNote');
-                Route::post('/{note:id}/delete', 'deleteNote');
+            Route::controller(NoteController::class)->prefix('{note:id}')->middleware('can:access,note')->group(function () {
+                Route::post('/', 'getNote');
+                Route::post('/update', 'updateNote');
+                Route::post('/delete', 'deleteNote');
             });
         });
     });
@@ -62,9 +62,9 @@ Route::middleware('auth:sanctum')->group(function () {
             });
 
             Route::post('/create', [TaskController::class, 'addTask']);
-            Route::controller(TaskController::class)->middleware('can:access,task')->group(function () {
-                Route::post('/{task:id}/update', 'updateTask');
-                Route::post('/{task:id}/delete', 'deleteTask');
+            Route::controller(TaskController::class)->prefix('{task:id}')->middleware('can:access,task')->group(function () {
+                Route::post('/update', 'updateTask');
+                Route::post('/delete', 'deleteTask');
             });
         });
     });

@@ -12,7 +12,7 @@ class NoteController extends Controller
 {
     public function getNote(NoteGroup $noteGroup, Note $note): JsonResponse
     {
-        return response()->json(['note' => ['id' => $note->id, 'title' => $note->title, 'content' => $note->content, 'note_group_id' => $note->group->id]], 200);
+        return response()->json(['note' => ['id' => $note->id, 'title' => $note->title, 'content' => $note->content, 'created_at' => $note->created_at]], 200);
     }
 
     public function addNote(Request $request, NoteGroup $noteGroup): JsonResponse
@@ -26,7 +26,7 @@ class NoteController extends Controller
             try {
                 $note = $noteGroup->notes()->create($request->merge(['note_group_id' => $noteGroup->id])->toArray());
 
-                return response()->json(['message' => 'Successfully created new note', 'note' => ['id' => $note->id, 'title' => $note->title, 'content' => $note->content, 'note_group_id' => $note->group->id]], 200);
+                return response()->json(['message' => 'Successfully created new note', 'note' => ['id' => $note->id, 'title' => $note->title, 'content' => $note->content, 'created_at' => $note->created_at]], 200);
             } catch (\Exception $e) {
                 return response()->json(['message' => 'Something went wrong while creating new note. Try again later' . $e->getMessage()], 500);
             }
@@ -49,14 +49,13 @@ class NoteController extends Controller
         $valid = $request->validate([
             'title' => 'string',
             'content' => 'required|string',
-            'note_group_id' => 'required|string|exists:note_groups,id'
         ]);
 
         if ($valid) {
             try {
                 $note->update($valid);
 
-                return response()->json(['message' => 'Note has been successfully updated', 'note' => ['id' => $note->id, 'title' => $note->title, 'content' => $note->content, 'note_group_id' => $note->group->id]], 200);
+                return response()->json(['message' => 'Note has been successfully updated', 'note' => ['id' => $note->id, 'title' => $note->title, 'content' => $note->content, 'created_at' => $note->created_at]], 200);
             } catch (\Exception $e) {
                 return response()->json(['message' => 'Something wen wrong while updating note. Try again later.'], 500);
             }

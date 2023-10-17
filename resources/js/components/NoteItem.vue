@@ -1,4 +1,10 @@
 <template>
+    <NoteFormEdit
+        @closeForm="closeForm"
+        :groupId="this.$route.params.group"
+        :note="this.note"
+        v-if="isEditingNote"
+    />
     <div class="flex flex-col gap-4">
         <div class="flex justify-between items-center">
             <div class="flex flex-col gap-1">
@@ -6,8 +12,16 @@
                 <p class="text-sm">{{ note.created_at }}</p>
             </div>
             <div class="flex gap-6">
-                <Edit class="h-6" />
-                <Delete class="h-6" @click="deleteNote" />
+                <IconEdit
+                    class="h-6"
+                    :class="isLoading ? 'loading' : ''"
+                    @click="isEditingNote = true"
+                />
+                <IconDelete
+                    class="h-6"
+                    :class="isLoading ? 'loading' : ''"
+                    @click="deleteNote"
+                />
             </div>
         </div>
         <p>{{ note.content }}</p>
@@ -15,33 +29,39 @@
 </template>
 
 <script>
+import NoteFormEdit from "./NoteFormEdit.vue";
+
 import { useUserStore } from "../stores/users";
 import { useNotesStore } from "../stores/notes";
 import { mapState } from "pinia";
 
-import { default as Edit } from "./IconEdit.vue";
-import { default as Delete } from "./IconDelete.vue";
+import IconEdit from "./IconEdit.vue";
+import IconDelete from "./IconDelete.vue";
 
 export default {
     name: "NoteItem",
     data() {
         return {
+            isLoading: false,
+            isEditingNote: false,
             note: {},
         };
     },
     components: {
-        Edit,
-        Delete,
+        NoteFormEdit,
+        IconEdit,
+        IconDelete,
     },
     emits: {
         noteDelete: null,
+        noteEdit: null,
     },
     props: {
         noteId: String,
     },
     watch: {
         noteId: function (newVal, oldVal) {
-            this.note = this.getNote(newVal);
+            this.note = this.getNote(this.$route.params.group, newVal);
         },
     },
     computed: {
@@ -49,10 +69,11 @@ export default {
         ...mapState(useNotesStore, ["getNote", "removeNote"]),
     },
     mounted() {
-        this.note = this.getNote(this.noteId);
+        this.note = this.getNote(this.$route.params.group, this.noteId);
     },
     methods: {
         deleteNote() {
+            this.isLoading = true;
             axios
                 .post(
                     `/api/notes/${this.$route.params.group}/${this.noteId}/delete`,
@@ -60,9 +81,13 @@ export default {
                     this.getApiConfig()
                 )
                 .then((res) => {
-                    this.removeNote({ id: this.noteId });
+                    this.removeNote({
+                        groupId: this.$route.params.group,
+                        id: this.noteId,
+                    });
                     this.$emit("noteDelete");
 
+                    this.isLoading = false;
                     this.$router.push({
                         name: "content",
                         params: {
@@ -72,9 +97,15 @@ export default {
                     });
                 })
                 .catch((err) => {
+                    this.isLoading = false;
                     console.error(err);
                     alert("Failed deleting your note");
                 });
+        },
+        closeForm() {
+            this.isEditingNote = false;
+            this.note = this.getNote(this.$route.params.group, this.noteId);
+            this.$emit("noteEdit");
         },
     },
 };
