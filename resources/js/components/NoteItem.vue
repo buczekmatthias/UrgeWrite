@@ -6,12 +6,14 @@
         v-if="isEditingNote"
     />
     <div class="flex flex-col gap-4">
-        <div class="flex justify-between items-center">
+        <div
+            class="flex justify-between items-center xl:flex-col xl:items-start xl:gap-4"
+        >
             <div class="flex flex-col gap-1">
                 <p class="text-2xl font-semibold">{{ note.title }}</p>
                 <p class="text-sm">{{ note.created_at }}</p>
             </div>
-            <div class="flex gap-6">
+            <div class="flex gap-6 xl:-order-1">
                 <IconEdit
                     class="h-6"
                     :class="isLoading ? 'loading' : ''"
@@ -24,7 +26,7 @@
                 />
             </div>
         </div>
-        <p>{{ note.content }}</p>
+        <p class="xl:max-h-[65vh] xl:overflow-auto">{{ note.content }}</p>
     </div>
 </template>
 

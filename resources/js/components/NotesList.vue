@@ -10,26 +10,24 @@
         @close-form="closeForm"
         v-if="isEditingNote"
     />
-    <div class="max-xl:box w-full !p-0">
+    <div class="max-xl:box w-full !p-0 xl:max-h-[80vh] xl:overflow-auto">
         <div
-            class="px-4 py-5 cursor-pointer flex justify-between items-center"
+            class="px-4 py-5 cursor-pointer flex justify-between items-center xl:pointer-events-none xl:cursor-default xl:border-b xl:border-solid xl:border-primary"
             ref="header"
             @click="handleExpand()"
         >
             <p class="font-semibold text-xl">
-                Notes from
                 <i>
-                    <b>"{{ chosenGroup ?? "" }}"</b>
+                    <b>{{ chosenGroup ?? "???" }}</b>
                 </i>
-                collection
             </p>
-            <p class="text-sm text-link">
+            <p class="text-sm text-link xl:hidden">
                 {{ isExpanded ? "Hide" : "Expand" }}
             </p>
         </div>
         <IconLoader v-if="isLoading" class="fill-gray-900 mx-auto my-4" />
         <div
-            class="max-h-0 overflow-hidden flex flex-col gap-2"
+            class="max-h-0 overflow-hidden flex flex-col gap-2 xl:overflow-auto xl:max-h-fit xl:py-3"
             v-else-if="list.length > 0"
         >
             <ButtonCreate text="Create note" @click="isCreatingNote = true" />
@@ -52,9 +50,12 @@
                 <p class="font-light text-sm">{{ item.created_at }}</p>
             </router-link>
         </div>
-        <div class="max-h-0 overflow-hidden flex flex-col gap-4" v-else>
-            <p class="text-center">There are no notes in this collection</p>
+        <div
+            class="max-h-0 overflow-hidden flex flex-col gap-4 xl:overflow-auto xl:max-h-fit xl:py-3"
+            v-else
+        >
             <ButtonCreate text="Create note" @click="isCreatingNote = true" />
+            <p class="text-center">There are no notes in this collection</p>
         </div>
     </div>
     <div class="max-xl:box">

@@ -4,7 +4,7 @@
     >
         <form
             @submit.prevent="handleCreateFormSubmit"
-            class="bg-white rounded-lg p-4 flex flex-col gap-6 w-full"
+            class="bg-white rounded-lg p-4 flex flex-col gap-6 w-full max-w-xl"
         >
             <p class="font-semibold text-3xl">Create new note</p>
             <div class="flex flex-col gap-2">
@@ -25,6 +25,7 @@
                     class="input h-72 resize-none"
                     ref="content"
                     v-model="content"
+                    required
                 ></textarea>
             </div>
             <div class="flex gap-4">
@@ -100,6 +101,8 @@ export default {
                 });
         },
         closeForm() {
+            this.$refs.title.value = "";
+            this.$refs.content.value = "";
             this.$emit("closeForm");
         },
     },

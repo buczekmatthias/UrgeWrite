@@ -4,7 +4,7 @@
     >
         <form
             @submit.prevent="handleUpdateFormSubmit"
-            class="bg-white rounded-lg p-4 flex flex-col gap-6 w-full"
+            class="bg-white rounded-lg p-4 flex flex-col gap-6 w-full max-w-xl"
         >
             <p class="font-semibold text-3xl">Update note</p>
             <div class="flex flex-col gap-2">
@@ -13,19 +13,20 @@
                     type="text"
                     id="e-title"
                     class="input"
-                    ref="input"
+                    ref="title"
                     v-model="title"
                 />
             </div>
             <div class="flex flex-col gap-2">
                 <label for="e-content">Content</label>
-                <input
+                <textarea
                     type="text"
                     id="e-content"
-                    class="input"
-                    ref="input"
+                    class="input h-72 resize-none"
+                    ref="content"
                     v-model="content"
-                />
+                    required
+                ></textarea>
             </div>
             <div class="flex gap-4">
                 <button
@@ -104,6 +105,8 @@ export default {
                 });
         },
         closeForm() {
+            this.$refs.title.value = "";
+            this.$refs.content.value = "";
             this.$emit("closeForm");
         },
     },

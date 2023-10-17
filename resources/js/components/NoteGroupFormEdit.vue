@@ -4,7 +4,7 @@
     >
         <form
             @submit.prevent="handleUpdateFormSubmit"
-            class="bg-white rounded-lg p-4 flex flex-col gap-6 w-full"
+            class="bg-white rounded-lg p-4 flex flex-col gap-6 w-full max-w-xl"
         >
             <p class="font-semibold text-3xl">Update group</p>
             <div class="flex flex-col gap-2">
@@ -15,6 +15,7 @@
                     class="input"
                     ref="input"
                     v-model="name"
+                    required
                 />
             </div>
             <div class="flex gap-4">
@@ -94,6 +95,7 @@ export default {
                 });
         },
         closeForm() {
+            this.$refs.input.value = "";
             this.$emit("closeForm");
         },
     },

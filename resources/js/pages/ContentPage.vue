@@ -1,7 +1,7 @@
 <template>
     <div
         ref="content"
-        class="w-full flex flex-col gap-4"
+        class="w-full flex flex-col gap-4 xl:max-h-[80vh]"
         :class="
             $route.params.type === 'notes'
                 ? 'max-w-screen-2xl'

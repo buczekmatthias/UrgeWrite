@@ -18,7 +18,7 @@ class NoteController extends Controller
     public function addNote(Request $request, NoteGroup $noteGroup): JsonResponse
     {
         $valid = $request->validate([
-            'title' => 'string',
+            'title' => 'nullable|string',
             'content' => 'required|string',
         ]);
 
@@ -47,7 +47,7 @@ class NoteController extends Controller
     public function updateNote(Request $request, NoteGroup $noteGroup, Note $note): JsonResponse
     {
         $valid = $request->validate([
-            'title' => 'string',
+            'title' => 'nullable|string',
             'content' => 'required|string',
         ]);
 

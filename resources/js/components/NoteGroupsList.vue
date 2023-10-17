@@ -1,23 +1,27 @@
 <template>
-    <div class="flex flex-col gap-4">
+    <div
+        class="flex flex-col gap-4 xl:box xl:grid xl:grid-cols-3 xl:gap-3 2xl:gap-6 xl:max-h-[85vh]"
+    >
         <NoteGroupFormCreate @close-form="closeForm" v-if="isCreatingGroup" />
         <NoteGroupFormEdit
             :groupId="$route.params?.group"
             @close-form="closeForm"
             v-if="isEditingGroup"
         />
-        <div class="max-xl:box w-full !p-0">
+        <div class="max-xl:box w-full !p-0 xl:max-h-[80vh] xl:overflow-auto">
             <div
-                class="px-4 py-5 cursor-pointer flex justify-between items-center"
+                class="px-4 py-5 cursor-pointer flex justify-between items-center xl:pointer-events-none xl:cursor-default xl:border-b xl:border-solid xl:border-primary"
                 ref="header"
                 @click="handleExpand()"
             >
                 <p class="font-semibold text-xl">Note groups</p>
-                <p class="text-sm text-link">
+                <p class="text-sm text-link xl:hidden">
                     {{ isExpanded ? "Hide" : "Expand" }}
                 </p>
             </div>
-            <div class="max-h-0 overflow-hidden flex flex-col gap-2">
+            <div
+                class="max-h-0 overflow-hidden flex flex-col gap-2 xl:overflow-auto xl:max-h-fit xl:py-3"
+            >
                 <ButtonCreate
                     text="Add new group"
                     @click="isCreatingGroup = true"
