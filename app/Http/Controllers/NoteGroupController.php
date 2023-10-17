@@ -23,7 +23,7 @@ class NoteGroupController extends Controller
     public function addNoteGroup(Request $request): JsonResponse
     {
         $valid = $request->validate([
-            'name' => 'required|string|unique:note_groups,name'
+            'name' => 'required|string|unique:note_groups,name,NULL,id,user_id,' . auth()->user()->id
         ]);
 
         if ($valid) {

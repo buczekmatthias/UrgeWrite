@@ -6,27 +6,17 @@
             @submit.prevent="handleCreateFormSubmit"
             class="bg-white rounded-lg p-4 flex flex-col gap-6 w-full max-w-xl"
         >
-            <p class="font-semibold text-3xl">Create new note</p>
+            <p class="font-semibold text-3xl">Create new group</p>
             <div class="flex flex-col gap-2">
-                <label for="c-title">Title</label>
+                <label for="c-name">Group name</label>
                 <input
                     type="text"
-                    id="c-title"
+                    id="c-name"
                     class="input"
-                    ref="title"
-                    v-model="title"
-                />
-            </div>
-            <div class="flex flex-col gap-2">
-                <label for="c-content">Content</label>
-                <textarea
-                    type="text"
-                    id="c-content"
-                    class="input h-72 resize-none"
-                    ref="content"
-                    v-model="content"
+                    ref="input"
+                    v-model="name"
                     required
-                ></textarea>
+                />
             </div>
             <div class="flex gap-4">
                 <button
@@ -37,8 +27,8 @@
                     Cancel
                 </button>
                 <button
-                    class="rounded-md px-4 py-2 border-2 border-solid border-emerald-600 bg-emerald-600 text-white font-semibold flex-1"
                     :class="isLoading ? 'loading' : ''"
+                    class="rounded-md px-4 py-2 border-2 border-solid border-emerald-600 bg-emerald-600 text-white font-semibold flex-1"
                 >
                     Create
                 </button>
@@ -49,45 +39,37 @@
 
 <script>
 import { useUserStore } from "../stores/users";
-import { useNotesStore } from "../stores/notes";
+import { useTaskGroupsStore } from "../stores/taskGroups";
 import { mapState } from "pinia";
 
 export default {
-    name: "NoteFromCreate",
+    name: "TaskGroupFromCreate",
     data() {
         return {
+            name: "",
             isLoading: false,
-            title: "",
-            content: "",
         };
-    },
-    props: {
-        groupId: String,
     },
     emits: {
         closeForm: null,
     },
     computed: {
         ...mapState(useUserStore, ["getApiConfig"]),
-        ...mapState(useNotesStore, ["setNotes"]),
+        ...mapState(useTaskGroupsStore, ["setTaskGroups"]),
     },
     methods: {
         handleCreateFormSubmit() {
             this.isLoading = true;
             axios
                 .post(
-                    `/api/notes/${this.groupId}/create`,
+                    `/api/tasks/add-new-group`,
                     {
-                        title: this.title,
-                        content: this.content,
+                        name: this.name,
                     },
                     this.getApiConfig()
                 )
                 .then((res) => {
-                    this.setNotes({
-                        groupId: this.groupId,
-                        notes: [res.data.note],
-                    });
+                    this.setTaskGroups({ groups: [res.data.group] });
 
                     this.isLoading = false;
                     this.closeForm();
@@ -95,12 +77,11 @@ export default {
                 .catch((err) => {
                     this.isLoading = false;
                     console.error(err);
-                    alert("Failed adding your note.");
+                    alert("Failed adding task group.");
                 });
         },
         closeForm() {
-            this.$refs.title.value = "";
-            this.$refs.content.value = "";
+            this.$refs.input.value = "";
             this.$emit("closeForm");
         },
     },

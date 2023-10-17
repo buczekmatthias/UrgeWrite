@@ -27,7 +27,9 @@ export default {
         };
     },
     watch: {
-        tab: (newTab, oldTab) => {},
+        tab: function (newTab, oldTab) {
+            this.setList();
+        },
     },
     computed: {
         isNotesTab() {
@@ -38,15 +40,7 @@ export default {
         ...mapState(useTaskGroupsStore, ["getTaskGroups", "setTaskGroups"]),
     },
     mounted() {
-        let listStore = this.isNotesTab
-            ? this.getNoteGroups()
-            : this.getTaskGroups();
-
-        if (listStore.length === 0) {
-            this.isNotesTab ? this.fetchNoteGroups() : this.fetchTaskGroups();
-        } else {
-            this.list = listStore;
-        }
+        this.setList();
     },
     methods: {
         fetchNoteGroups() {
@@ -76,6 +70,19 @@ export default {
                         "Failed fetching your task groups. Check console for error"
                     );
                 });
+        },
+        setList() {
+            let listStore = this.isNotesTab
+                ? this.getNoteGroups()
+                : this.getTaskGroups();
+
+            if (listStore.length === 0) {
+                this.isNotesTab
+                    ? this.fetchNoteGroups()
+                    : this.fetchTaskGroups();
+            } else {
+                this.list = listStore;
+            }
         },
     },
 };

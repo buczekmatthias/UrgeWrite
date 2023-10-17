@@ -29,7 +29,7 @@
 }
 
 .expand > div:nth-of-type(2) {
-    @apply max-h-fit px-4 py-5;
+    @apply max-h-fit px-4 py-5 xl:px-0 xl:py-3;
 }
 
 @layer components {

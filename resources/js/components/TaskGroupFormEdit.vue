@@ -3,35 +3,26 @@
         class="fixed top-0 left-0 h-screen w-full z-30 flex items-center justify-center bg-slate-900 bg-opacity-80 p-6"
     >
         <form
-            @submit.prevent="handleCreateFormSubmit"
+            @submit.prevent="handleUpdateFormSubmit"
             class="bg-white rounded-lg p-4 flex flex-col gap-6 w-full max-w-xl"
         >
-            <p class="font-semibold text-3xl">Create new note</p>
+            <p class="font-semibold text-3xl">Update group</p>
             <div class="flex flex-col gap-2">
-                <label for="c-title">Title</label>
+                <label for="e-name">Group name</label>
                 <input
                     type="text"
-                    id="c-title"
+                    id="e-name"
                     class="input"
-                    ref="title"
-                    v-model="title"
-                />
-            </div>
-            <div class="flex flex-col gap-2">
-                <label for="c-content">Content</label>
-                <textarea
-                    type="text"
-                    id="c-content"
-                    class="input h-72 resize-none"
-                    ref="content"
-                    v-model="content"
+                    ref="input"
+                    v-model="name"
                     required
-                ></textarea>
+                />
             </div>
             <div class="flex gap-4">
                 <button
                     type="button"
                     class="rounded-md px-4 py-2 border-2 border-solid border-red-600 text-red-600 font-semibold flex-1"
+                    :class="isLoading ? 'loading' : ''"
                     @click="closeForm"
                 >
                     Cancel
@@ -40,7 +31,7 @@
                     class="rounded-md px-4 py-2 border-2 border-solid border-emerald-600 bg-emerald-600 text-white font-semibold flex-1"
                     :class="isLoading ? 'loading' : ''"
                 >
-                    Create
+                    Update
                 </button>
             </div>
         </form>
@@ -49,58 +40,62 @@
 
 <script>
 import { useUserStore } from "../stores/users";
-import { useNotesStore } from "../stores/notes";
+import { useTaskGroupsStore } from "../stores/taskGroups";
 import { mapState } from "pinia";
 
 export default {
-    name: "NoteFromCreate",
+    name: "TaskGroupFromEdit",
     data() {
         return {
             isLoading: false,
-            title: "",
-            content: "",
+            name: "",
         };
     },
     props: {
         groupId: String,
+    },
+    watch: {
+        groupId: function (newVal, oldVal) {
+            this.name = this.getTaskGroupName(newVal);
+        },
     },
     emits: {
         closeForm: null,
     },
     computed: {
         ...mapState(useUserStore, ["getApiConfig"]),
-        ...mapState(useNotesStore, ["setNotes"]),
+        ...mapState(useTaskGroupsStore, [
+            "getTaskGroupName",
+            "updateGroupName",
+        ]),
+    },
+    mounted() {
+        this.name = this.getTaskGroupName(this.groupId);
     },
     methods: {
-        handleCreateFormSubmit() {
+        handleUpdateFormSubmit() {
             this.isLoading = true;
             axios
                 .post(
-                    `/api/notes/${this.groupId}/create`,
+                    `/api/tasks/${this.groupId}/update`,
                     {
-                        title: this.title,
-                        content: this.content,
+                        name: this.name,
                     },
                     this.getApiConfig()
                 )
                 .then((res) => {
-                    this.setNotes({
-                        groupId: this.groupId,
-                        notes: [res.data.note],
-                    });
-
-                    this.isLoading = false;
+                    this.updateGroupName({ id: this.groupId, name: this.name });
                     this.closeForm();
+                    this.isLoading = false;
                 })
                 .catch((err) => {
                     this.isLoading = false;
                     console.error(err);
-                    alert("Failed adding your note.");
+                    alert("Failed editing task group");
                 });
         },
         closeForm() {
-            this.$refs.title.value = "";
-            this.$refs.content.value = "";
+            this.$refs.input.value = "";
             this.$emit("closeForm");
         },
     },

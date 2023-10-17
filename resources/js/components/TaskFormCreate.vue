@@ -6,28 +6,26 @@
             @submit.prevent="handleCreateFormSubmit"
             class="bg-white rounded-lg p-4 flex flex-col gap-6 w-full max-w-xl"
         >
-            <p class="font-semibold text-3xl">Create new note</p>
-            <div class="flex flex-col gap-2">
-                <label for="c-title">Title</label>
-                <input
-                    type="text"
-                    id="c-title"
-                    class="input"
-                    ref="title"
-                    v-model="title"
-                />
-            </div>
+            <p class="font-semibold text-3xl">Create new task</p>
             <div class="flex flex-col gap-2">
                 <label for="c-content">Content</label>
-                <textarea
+                <input
                     type="text"
                     id="c-content"
-                    class="input h-72 resize-none"
+                    class="input"
                     ref="content"
                     v-model="content"
-                    required
-                ></textarea>
+                />
             </div>
+            <label class="cursor-pointer flex items-center gap-2">
+                <input
+                    type="checkbox"
+                    name="isDone"
+                    ref="isDone"
+                    v-model="isDone"
+                />
+                <span>Set task as finished</span>
+            </label>
             <div class="flex gap-4">
                 <button
                     type="button"
@@ -49,7 +47,7 @@
 
 <script>
 import { useUserStore } from "../stores/users";
-import { useNotesStore } from "../stores/notes";
+import { useTasksStore } from "../stores/tasks";
 import { mapState } from "pinia";
 
 export default {
@@ -57,8 +55,8 @@ export default {
     data() {
         return {
             isLoading: false,
-            title: "",
             content: "",
+            isDone: false,
         };
     },
     props: {
@@ -69,24 +67,24 @@ export default {
     },
     computed: {
         ...mapState(useUserStore, ["getApiConfig"]),
-        ...mapState(useNotesStore, ["setNotes"]),
+        ...mapState(useTasksStore, ["setTasks"]),
     },
     methods: {
         handleCreateFormSubmit() {
             this.isLoading = true;
             axios
                 .post(
-                    `/api/notes/${this.groupId}/create`,
+                    `/api/tasks/${this.groupId}/create`,
                     {
-                        title: this.title,
                         content: this.content,
+                        isDone: this.isDone,
                     },
                     this.getApiConfig()
                 )
                 .then((res) => {
-                    this.setNotes({
+                    this.setTasks({
                         groupId: this.groupId,
-                        notes: [res.data.note],
+                        tasks: [res.data.task],
                     });
 
                     this.isLoading = false;
@@ -95,12 +93,12 @@ export default {
                 .catch((err) => {
                     this.isLoading = false;
                     console.error(err);
-                    alert("Failed adding your note.");
+                    alert("Failed adding your task.");
                 });
         },
         closeForm() {
-            this.$refs.title.value = "";
             this.$refs.content.value = "";
+            this.$refs.isDone.checked = false;
             this.$emit("closeForm");
         },
     },

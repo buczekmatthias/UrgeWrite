@@ -4,41 +4,65 @@ import { useLocalStorage } from "@vueuse/core";
 export const useTasksStore = defineStore("tasks", {
     state: () => {
         return {
-            // TODO: Convert to object
-            tasks: useLocalStorage("tasks", "[]"),
+            tasks: useLocalStorage("tasks", "{}"),
         };
     },
     getters: {
-        getTasks: (state) => (groupId) => {
-            return JSON.parse(state.tasks).filter(
-                (task) => task.group_id === groupId
-            );
-        },
-        getTask: (state) => (taskId) =>
-            JSON.parse(state.tasks).find((task) => task.id === taskId),
+        getGroupTasks: (state) => (groupId) => JSON.parse(state.tasks)[groupId],
     },
     actions: {
         setTasks(payload) {
-            this.tasks = JSON.stringify([
-                ...JSON.parse(this.tasks),
-                ...payload.tasks,
-            ]);
+            let tasks = JSON.parse(this.tasks);
+
+            if (tasks[payload.groupId]) {
+                tasks[payload.groupId] = [
+                    ...payload.tasks,
+                    ...tasks[payload.groupId],
+                ];
+            } else {
+                tasks[payload.groupId] = payload.tasks;
+            }
+
+            this.tasks = JSON.stringify(tasks);
         },
-        updateTaskContent(payload) {
-            let task = this.getTasks(payload.groupId).find(
+        updateTask(payload) {
+            let tasks = JSON.parse(this.tasks);
+            let task = tasks[payload.groupId].find(
                 (task) => task.id === payload.id
             );
-            task.content = payload.content;
+
             task.isDone = payload.isDone;
-            task.task_group_id = payload.groupId;
+
+            this.tasks = JSON.stringify(tasks);
         },
         setTaskDone(payload) {
-            this.getTasks(payload.groupId).find(
+            let tasks = JSON.parse(this.tasks);
+            let task = tasks[payload.groupId].find(
                 (task) => task.id === payload.id
-            ).isDone = payload.isDone;
+            );
+
+            task.isDone = payload.isDone;
+
+            this.tasks = JSON.stringify(tasks);
+        },
+        removeTask(payload) {
+            let tasks = JSON.parse(this.tasks);
+            let group = tasks[payload.groupId];
+            let task = group.find((task) => task.id === payload.id);
+
+            group.splice(group.indexOf(task), 1);
+
+            this.tasks = JSON.stringify(tasks);
         },
         resetTasks() {
             this.tasks = JSON.stringify([]);
+        },
+        removeGroup(payload) {
+            let tasks = JSON.parse(this.tasks);
+
+            delete tasks[payload.groupId];
+
+            this.tasks = JSON.stringify(tasks);
         },
     },
 });

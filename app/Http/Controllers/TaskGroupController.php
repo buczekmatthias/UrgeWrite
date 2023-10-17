@@ -23,7 +23,7 @@ class TaskGroupController extends Controller
     public function addTaskGroup(Request $request): JsonResponse
     {
         $valid = $request->validate([
-            'name' => 'required|string|unique:task_groups,name'
+            'name' => 'required|string|unique:task_groups,name,NULL,id,user_id,' . auth()->user()->id
         ]);
 
         if ($valid) {
@@ -54,7 +54,7 @@ class TaskGroupController extends Controller
     public function updateTaskGroup(Request $request, TaskGroup $taskGroup): JsonResponse
     {
         $valid = $request->validate([
-            'name' => 'string|required|unique:task_groups,name'
+            'name' => 'string|required|unique:task_groups,name,NULL,id,user_id,' . auth()->user()->id
         ]);
 
         if ($valid) {

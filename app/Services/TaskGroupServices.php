@@ -15,7 +15,7 @@ class TaskGroupServices
 
     public static function getTaskGroupTasks(TaskGroup $taskGroup): Collection
     {
-        return $taskGroup->tasks()->orderBy('created_at', 'DESC')->select('id', 'isDone', 'content', 'task_group_id AS group_id')->get();
+        return $taskGroup->tasks()->orderBy('created_at', 'DESC')->select('id', 'isDone', 'content')->get();
     }
 
     public static function createTaskGroup(User $user, string $name): array
@@ -23,7 +23,7 @@ class TaskGroupServices
         try {
             $group = $user->taskGroups()->create(['name' => $name]);
 
-            return [['message' => 'Group successfully added to your collection', 'group' => ['id' => $group->id, 'name' => $group->name]], 'code' => 201];
+            return [['message' => 'Group successfully added to your collection', 'group' => ['id' => $group->id, 'name' => $group->name, 'tasks_count' => 0]], 'code' => 201];
         } catch (\Exception $e) {
             return ['message' => "Couldn't add group. Try again later.", 'code' => 500];
         }

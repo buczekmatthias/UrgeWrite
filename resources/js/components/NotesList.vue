@@ -36,7 +36,7 @@
                 :to="{
                     name: 'content',
                     params: {
-                        type: $route.params.type,
+                        type: 'notes',
                         group: item.group_id,
                         elementId: item.id,
                     },

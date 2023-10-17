@@ -30,7 +30,7 @@
                     class="sub-link flex justify-between items-center gap-2"
                     :to="{
                         name: 'content',
-                        params: { type: $route.params.type, group: item.id },
+                        params: { type: 'notes', group: item.id },
                     }"
                     v-for="(item, i) in groupsList"
                     :key="i"
@@ -64,7 +64,7 @@
             @note-created="increaseCount"
             @note-deleted="decreaseCount"
             :group="$route.params.group"
-            v-if="$route.params.group"
+            v-if="this.groupsList.length > 0 && $route.params.group"
         />
         <div class="max-xl:box" v-else>
             <p class="text-lg">You need to select group to show notes</p>
